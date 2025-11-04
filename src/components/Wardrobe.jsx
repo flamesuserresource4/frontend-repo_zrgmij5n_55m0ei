@@ -5,10 +5,10 @@ import { Upload, Filter, Edit2, Trash2, Eye } from 'lucide-react';
 const initialItems = [
   {
     id: '1',
-    image: 'https://images.unsplash.com/photo-1695740633675-d060b607f5c4?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxjZXJhbWljJTIwcG90dGVyeSUyMGhhbmRtYWRlfGVufDB8MHx8fDE3NjIxNzI2NDR8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80',
-    type: 'T-Shirt',
-    color: 'White',
-    occasion: 'Casual',
+    image: 'https://images.unsplash.com/photo-1514996937319-344454492b37?q=80&w=800&auto=format&fit=crop',
+    type: 'Kurta',
+    color: 'Cream',
+    occasion: 'Festive',
   },
   {
     id: '2',
@@ -19,10 +19,10 @@ const initialItems = [
   },
   {
     id: '3',
-    image: 'https://images.unsplash.com/photo-1516826957135-700dedea698c?q=80&w=800&auto=format&fit=crop',
-    type: 'Dress',
+    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop',
+    type: 'Saree',
     color: 'Black',
-    occasion: 'Party',
+    occasion: 'Wedding',
   },
   {
     id: '4',
@@ -43,9 +43,7 @@ export default function Wardrobe() {
 
   const filtered = useMemo(() => {
     return items.filter((it) => {
-      const matchesQuery = query
-        ? it.type.toLowerCase().includes(query.toLowerCase())
-        : true;
+      const matchesQuery = query ? it.type.toLowerCase().includes(query.toLowerCase()) : true;
       const matchesCategory = category === 'All' || it.type === category;
       const matchesColor = color === 'All' || it.color === color;
       const matchesOcc = occasion === 'All' || it.occasion === occasion;
@@ -67,11 +65,12 @@ export default function Wardrobe() {
   const removeItem = (id) => setItems((prev) => prev.filter((i) => i.id !== id));
 
   const shuffleOutfits = () => {
-    const tops = items.filter((i) => ['T-Shirt', 'Shirt', 'Dress'].includes(i.type));
-    const bottoms = items.filter((i) => ['Jeans', 'Pants', 'Skirt'].includes(i.type));
-    const shoes = items.filter((i) => ['Sneakers', 'Heels', 'Boots'].includes(i.type));
+    const ethnic = items.filter((i) => ['Saree', 'Kurta', 'Lehenga', 'Sherwani'].includes(i.type));
+    const westernTop = items.filter((i) => ['T-Shirt', 'Shirt', 'Dress', 'Blouse'].includes(i.type));
+    const bottoms = items.filter((i) => ['Jeans', 'Pants', 'Skirt', 'Palazzo'].includes(i.type));
     const pick = (arr) => (arr.length ? arr[Math.floor(Math.random() * arr.length)] : null);
-    return [pick(tops), pick(bottoms), pick(shoes)].filter(Boolean);
+    const combo = [pick(ethnic) || pick(westernTop), pick(bottoms)];
+    return combo.filter(Boolean);
   };
 
   const onDrop = (e) => {
@@ -88,9 +87,9 @@ export default function Wardrobe() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => fileRef.current?.click()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-black/10 shadow-sm hover:shadow transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-orange-100 to-amber-100 border border-amber-900/10 shadow-sm hover:shadow transition"
           >
-            <Upload className="w-4 h-4" /> Upload
+            <Upload className="w-4 h-4 text-amber-700" /> <span className="text-neutral-900">Upload</span>
           </button>
           <input
             ref={fileRef}
@@ -101,7 +100,7 @@ export default function Wardrobe() {
             className="hidden"
           />
           <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-black/10 text-sm text-neutral-700">
-            <Filter className="w-4 h-4" /> Refine
+            <Filter className="w-4 h-4 text-amber-700" /> Refine
           </div>
         </div>
       </div>
@@ -109,30 +108,31 @@ export default function Wardrobe() {
       <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={onDrop}
-        className="mt-6 rounded-2xl border border-dashed border-black/10 bg-white/60 p-6 text-center"
+        className="mt-6 rounded-2xl border border-dashed border-amber-900/20 bg-white/70 p-6 text-center"
       >
         <p className="text-neutral-700">Drag & drop images here, or click Upload.</p>
+        <p className="text-xs text-amber-800/80 mt-1">Supports Saree, Kurta, Lehenga, Western wear and more.</p>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="mt-6 grid grid-cols-2 md:grid-cols-5 gap-3">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by type..."
-          className="col-span-2 md:col-span-1 px-3 py-2 rounded-xl border border-black/10 bg-white"
+          className="col-span-2 md:col-span-2 px-3 py-2 rounded-xl border border-black/10 bg-white"
         />
         <select value={category} onChange={(e) => setCategory(e.target.value)} className="px-3 py-2 rounded-xl border border-black/10 bg-white">
-          {['All', 'T-Shirt', 'Shirt', 'Dress', 'Jeans', 'Pants', 'Skirt'].map((c) => (
+          {['All', 'T-Shirt', 'Shirt', 'Dress', 'Jeans', 'Pants', 'Skirt', 'Blouse', 'Saree', 'Kurta', 'Lehenga', 'Sherwani', 'Palazzo'].map((c) => (
             <option key={c}>{c}</option>
           ))}
         </select>
         <select value={color} onChange={(e) => setColor(e.target.value)} className="px-3 py-2 rounded-xl border border-black/10 bg-white">
-          {['All', 'White', 'Black', 'Blue', 'Beige', 'Red', 'Green'].map((c) => (
+          {['All', 'White', 'Black', 'Blue', 'Beige', 'Red', 'Green', 'Cream', 'Gold'].map((c) => (
             <option key={c}>{c}</option>
           ))}
         </select>
         <select value={occasion} onChange={(e) => setOccasion(e.target.value)} className="px-3 py-2 rounded-xl border border-black/10 bg-white">
-          {['All', 'Casual', 'Office', 'Party', 'Wedding', 'Date'].map((c) => (
+          {['All', 'Casual', 'Office', 'Party', 'Wedding', 'Date', 'Festive'].map((c) => (
             <option key={c}>{c}</option>
           ))}
         </select>
@@ -147,21 +147,21 @@ export default function Wardrobe() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              whileHover={{ y: -4 }}
-              className="group rounded-2xl overflow-hidden bg-white border border-black/10 shadow-sm"
+              whileHover={{ y: -6 }}
+              className="group rounded-2xl overflow-hidden bg-white border border-amber-900/10 shadow-sm"
             >
               <div className="aspect-[4/5] overflow-hidden">
-                <img src={it.image} alt={it.type} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                <img src={it.image} alt={it.type} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
               <div className="p-4 flex items-center justify-between">
                 <div>
-                  <div className="text-sm text-neutral-500">{it.color} · {it.occasion}</div>
-                  <div className="font-semibold text-neutral-900">{it.type}</div>
+                  <div className="text-xs uppercase tracking-wide text-amber-800/80">{it.occasion}</div>
+                  <div className="font-semibold text-neutral-900">{it.type} <span className="text-neutral-500">· {it.color}</span></div>
                 </div>
                 <div className="flex items-center gap-2 text-neutral-700">
-                  <button className="p-2 rounded-lg hover:bg-neutral-100"><Eye className="w-4 h-4" /></button>
-                  <button className="p-2 rounded-lg hover:bg-neutral-100"><Edit2 className="w-4 h-4" /></button>
-                  <button onClick={() => removeItem(it.id)} className="p-2 rounded-lg hover:bg-red-50 text-red-600"><Trash2 className="w-4 h-4" /></button>
+                  <button className="p-2 rounded-lg hover:bg-amber-50"><Eye className="w-4 h-4" /></button>
+                  <button className="p-2 rounded-lg hover:bg-amber-50"><Edit2 className="w-4 h-4" /></button>
+                  <button onClick={() => removeItem(it.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-600"><Trash2 className="w-4 h-4" /></button>
                 </div>
               </div>
             </motion.div>
@@ -177,8 +177,8 @@ export default function Wardrobe() {
             const names = picks.map((p) => p.type).join(' + ');
             alert(`Shuffled Outfit: ${names}`);
           }}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-white shadow-lg hover:shadow-xl transition"
-          style={{ backgroundImage: 'linear-gradient(135deg,#e1b382,#f2d0b5)' }}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-white shadow-lg hover:shadow-xl transition"
+          style={{ backgroundImage: 'linear-gradient(135deg,#e76f00,#f2b880)' }}
         >
           Shuffle Outfit
         </button>
